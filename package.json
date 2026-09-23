@@ -1,0 +1,21 @@
+{
+  "name": "nail-cyber-bot-fa",
+  "version": "1.0.0",
+  "description": "ربات شخصی واتساپ نیل سایبر - نسخه کاملا فارسی",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "pino": "^8.17.0",
+    "qrcode": "^1.5.3"
+  },
+  "author": "نیل سایبر",
+  "license": "MIT"
+}

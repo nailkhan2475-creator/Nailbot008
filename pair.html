@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ربات نیل سایبر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: linear-gradient(135deg, #0a1a2a 0%, #000010 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .box {
+      background: linear-gradient(135deg, rgba(0,20,40,0.75), rgba(0,10,30,0.85));
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 70px 25px 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid rgba(126,220,255,0.3);
+      box-shadow: 0 10px 40px rgba(0,150,255,0.2);
+      position: relative;
+    }
+    .avatar {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid rgba(126,220,255,0.5);
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    h2 { color: #7edcff; margin-bottom: 6px; }
+    h6 { color: #aeeeff; font-weight: 500; margin-bottom: 14px; }
+    .input-container { display: flex; margin: 15px 0; border-radius: 12px; overflow: hidden; }
+    .input-container input {
+      flex: 1; padding: 0.9rem; border: none; outline: none;
+      background: #fff; font-size: 1rem; color: #000; text-align: center;
+    }
+    .input-container button {
+      padding: 0.9rem 1.2rem; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff; font-weight: 600; font-family: inherit;
+    }
+    #result { margin: 14px 0; font-weight: 600; min-height: 24px; }
+    .code-box {
+      display: inline-block; background: rgba(0,100,200,0.3);
+      padding: 12px 20px; border-radius: 10px; font-size: 1.4rem;
+      letter-spacing: 3px; color: #7edcff; cursor: pointer;
+    }
+    .instructions {
+      text-align: right; font-size: 0.85rem; color: #aeeeff;
+      background: rgba(0,30,60,0.35); padding: 1rem; border-radius: 12px; margin-top: 16px;
+    }
+    .instructions ol { padding-right: 1.2rem; margin-top: 6px; }
+    .instructions li { margin-bottom: 6px; line-height: 1.5; }
+    .footer { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="avatar"><img src="https://files.catbox.moe/sb24ud.jpg" alt="لوگو"></div>
+    <h2>ربات نیل سایبر</h2>
+    <h6>ساخته شده توسط نیل سایبر</h6>
+
+    <div class="input-container">
+      <input type="tel" id="number" placeholder="شماره واتساپ با کد کشور، مثلا 93785293400">
+      <button id="submit">دریافت کد</button>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="instructions">
+      <strong>📋 راهنمای اتصال:</strong>
+      <ol>
+        <li>شماره واتساپ خودت رو با کد کشور وارد کن</li>
+        <li>روی «دریافت کد» بزن</li>
+        <li>توی واتساپ برو به: تنظیمات ← دستگاه‌های متصل ← اتصال دستگاه ← اتصال با شماره تلفن</li>
+        <li>کدی که اینجا گرفتی رو وارد کن</li>
+      </ol>
+    </div>
+
+    <div class="footer">این یک محصول رسمی واتساپ نیست. مسئولیت استفاده بر عهده‌ی خودتونه.</div>
+  </div>
+
+  <script>
+    const numberInput = document.getElementById('number');
+    const result = document.getElementById('result');
+    const btn = document.getElementById('submit');
+
+    btn.addEventListener('click', async () => {
+      const number = numberInput.value.replace(/[^0-9]/g, '');
+      if (!number || number.length < 8) {
+        result.innerHTML = '<span style="color:#ff6b6b">⚠️ لطفا شماره معتبر با کد کشور وارد کن</span>';
+        return;
+      }
+      result.innerHTML = '⏳ در حال دریافت کد، چند لحظه صبر کن...';
+
+      // چند بار وضعیت رو چک می‌کنیم چون تولید کد کمی زمان می‌بره
+      for (let i = 0; i < 15; i++) {
+        try {
+          const res = await fetch('/status');
+          const data = await res.json();
+          if (data.code) {
+            result.innerHTML = `<div class="code-box" onclick="navigator.clipboard.writeText('${data.code}')">${data.code}</div><div style="font-size:0.75rem;margin-top:6px;color:#aeeeff">برای کپی کردن روی کد بزن</div>`;
+            return;
+          }
+        } catch (e) {}
+        await new Promise(r => setTimeout(r, 2000));
+      }
+      result.innerHTML = '<span style="color:#ff6b6b">❌ کد دریافت نشد. سرور رو دوباره بررسی کن.</span>';
+    });
+  </script>
+</body>
+</html>
